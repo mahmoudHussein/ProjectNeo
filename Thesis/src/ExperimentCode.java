@@ -25,7 +25,7 @@ public class ExperimentCode {
 		        System.out.print(x[i][j]+ "  ");
 	//	        if(j < x[i].length - 1) System.out.print(" ");
 		    }
-		    System.out.println();
+//		    System.out.println();
 		}
 	}
 	
