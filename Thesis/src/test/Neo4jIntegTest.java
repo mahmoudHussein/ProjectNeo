@@ -102,22 +102,26 @@ public class Neo4jIntegTest {
 						
 						String objectID = eElement.getAttribute("ObjDef.ID");
 						n.setProperty("objectID", objectID);								//saving the objectID as a new property for the created node
+						System.out.print("1 ");
 						
 						String objectType = eElement.getAttribute("SymbolNum") ;
 						n.setProperty("objectType", objectType);
+						System.out.print("2 ");
 						if(eElement.getAttribute("SymbolNum").equals("ST_BPMN_SUBPROCESS")){
 							String linkedModelID = eElement.getAttribute("LinkedModels.IdRefs"); 
 							n.setProperty("linkedModelID", linkedModelID);
+							System.out.print("3 ");
 						}
 						
 						if(eElement.getAttribute("ToCxnDefs.IdRefs").contains("CxnDef")){								//this line of code i wrote so incase it doesn't have a connection the connection ID wouldn't show.
 							String connectionRef= eElement.getAttribute("ToCxnDefs.IdRefs");
 							String[] allCon = connectionRef.split(" ");													//since some of the connection are split using spaces i splited on these spaces to save the connections in the
 												
-								for(int allConCounter = 0; allConCounter <= allCon.length; allConCounter++ ){
-									String connectionNum = "connection "+allConCounter;
+								for(int allConCounter = 0; allConCounter < allCon.length; allConCounter++ ){
+									String connectionNum = "connected With "+allConCounter;
 									String connectionIDRef = allCon[allConCounter];
 									n.setProperty(connectionNum, connectionIDRef);
+									System.out.print("4 ");
 								}
 							
 						}
@@ -142,6 +146,7 @@ public class Neo4jIntegTest {
 											Element AddInfo = (Element) AddInfoNode;							//casting the object into an element so we can use it and get its value
 											String theAddInfo= AddInfo.getAttribute("TextValue");
 											n.setProperty(AdditionalInfo, theAddInfo);
+											System.out.print("5 ");
 												
 											}
 						}
@@ -151,6 +156,7 @@ public class Neo4jIntegTest {
 								Element e = (Element) NameElements.getElementsByTagName("PlainText").item(0);
 								String infoText= e.getAttribute("TextValue");							
 								n.setProperty("Information text", infoText);
+								System.out.print("6 ");
 							}
 						}
 			
@@ -174,13 +180,21 @@ public class Neo4jIntegTest {
 							if(connection.getNodeType() == Node.ELEMENT_NODE){
 								Element Conn = (Element) connection;							//changing the connection into the element so we can use it.
 								if(Conn.getAttribute("CxnDef.ID").contains("CxnDef")){								//this line of code i wrote so incase it doesn't have a connection the connection ID wouldn't show.
-									connectionsArray[ConnectCountertemp][ConnectCounterj]=eElement.getAttribute("ObjDef.ID");
-									connectionsArray[ConnectCountertemp][ConnectCounterj+1]=Conn.getAttribute("CxnDef.ID");
-									connectionsArray[ConnectCountertemp][ConnectCounterj+2]=Conn.getAttribute("CxnDef.Type");
-									connectionsArray[ConnectCountertemp][ConnectCounterj+3]=Conn.getAttribute("ToObjDef.IdRef");
+									String connectionID =Conn.getAttribute("CxnDef.ID");
+									n.setProperty("connectionID", connectionID);
+									System.out.print("7");
+									String connectionType=Conn.getAttribute("CxnDef.Type");
+									n.setProperty("connectionType", connectionType);
+									System.out.print("8");
+									String connectingWithObject=Conn.getAttribute("ToObjDef.IdRef");
+									n.setProperty("connectingWithObject", connectingWithObject);
+									System.out.print("9");
+									
 									Element probability = (Element) Conn.getElementsByTagName("AttrDef").item(0);
 									if( probability != null &&probability.getAttribute("AttrDef.Type").equals("AT_PROB")){
-										connectionsArray[ConnectCountertemp][ConnectCounterj+4] = probability.getElementsByTagName("AttrValue").item(0).getTextContent(); //added the probability in the connection
+										String probabilityOfConnection = probability.getElementsByTagName("AttrValue").item(0).getTextContent(); //added the probability in the connection
+										n.setProperty("probabilityOfConnection", probabilityOfConnection);
+										System.out.print("10");
 									}
 								}
 							}
@@ -195,9 +209,11 @@ public class Neo4jIntegTest {
 				//addinng properties end here
 				
 				nodes.add(n);
+				System.out.println("node added");
 			}
 			transaction.success();
 		}
+	}
 	}
 	
 //	void removeData(){
@@ -221,6 +237,9 @@ public class Neo4jIntegTest {
 	  final JFileChooser chooser = new JFileChooser();
       if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
     	 Document d =  ReadFileAndSave(chooser.getSelectedFile());
+    	 Neo4jIntegTest t = new Neo4jIntegTest();
+    	 t.createDatabase(d);
+    	 t.shutdown();
       }
   }
  
