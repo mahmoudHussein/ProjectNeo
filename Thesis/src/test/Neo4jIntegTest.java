@@ -93,7 +93,6 @@ public class Neo4jIntegTest {
 				//to add the properties here
 				
 				NodeList nList = XMLdoc.getElementsByTagName("ObjDef");                            //all objects in a list.
-				int ConnectCountertemp =0;
 				for (int temp = 0; temp < nList.getLength(); temp++) {
 				
 					Node nNode = nList.item(temp);											//the object with all its information in the node at number which is equal counter.
@@ -102,15 +101,19 @@ public class Neo4jIntegTest {
 						
 						String objectID = eElement.getAttribute("ObjDef.ID");
 						n.setProperty("objectID", objectID);								//saving the objectID as a new property for the created node
-						System.out.print("1 ");
+						System.out.println("1 ");
+						System.out.println( n.getProperty( "objectID" )+ " " );
 						
 						String objectType = eElement.getAttribute("SymbolNum") ;
 						n.setProperty("objectType", objectType);
-						System.out.print("2 ");
+						System.out.println("2 ");
+						System.out.println( n.getProperty( "objectType" )+ " " );
+						
 						if(eElement.getAttribute("SymbolNum").equals("ST_BPMN_SUBPROCESS")){
 							String linkedModelID = eElement.getAttribute("LinkedModels.IdRefs"); 
 							n.setProperty("linkedModelID", linkedModelID);
-							System.out.print("3 ");
+							System.out.println("3 ");
+							System.out.println( n.getProperty( "linkedModelID" )+ " " );
 						}
 						
 						if(eElement.getAttribute("ToCxnDefs.IdRefs").contains("CxnDef")){								//this line of code i wrote so incase it doesn't have a connection the connection ID wouldn't show.
@@ -121,7 +124,8 @@ public class Neo4jIntegTest {
 									String connectionNum = "connected With "+allConCounter;
 									String connectionIDRef = allCon[allConCounter];
 									n.setProperty(connectionNum, connectionIDRef);
-									System.out.print("4 ");
+									System.out.println("4 ");
+									System.out.println( n.getProperty(connectionNum)+ " " );
 								}
 							
 						}
@@ -146,7 +150,8 @@ public class Neo4jIntegTest {
 											Element AddInfo = (Element) AddInfoNode;							//casting the object into an element so we can use it and get its value
 											String theAddInfo= AddInfo.getAttribute("TextValue");
 											n.setProperty(AdditionalInfo, theAddInfo);
-											System.out.print("5 ");
+											System.out.println("5 ");
+											System.out.println( n.getProperty(AdditionalInfo)+ " " );
 												
 											}
 						}
@@ -156,8 +161,11 @@ public class Neo4jIntegTest {
 								Element e = (Element) NameElements.getElementsByTagName("PlainText").item(0);
 								String infoText= e.getAttribute("TextValue");							
 								n.setProperty("Information text", infoText);
-								System.out.print("6 ");
+								System.out.println("6 ");
+								System.out.println( n.getProperty("Information text")+ " " );
 							}
+						}
+							
 						}
 			
 //							if(NameElements.getAttribute("AttrDef.Type").equals("AT_ID")){
@@ -170,44 +178,48 @@ public class Neo4jIntegTest {
 						
 						//this part is for getting the connections and their information
 						 
-						int ConnectCounter = 0;
+						
 						NodeList Connections = eElement.getElementsByTagName("CxnDef"); 		//getting the connections list for the specified element
-						//System.out.println(Connections.getLength()); 
-						while(ConnectCounter < Connections.getLength()){
+						System.out.println("number of connections" + Connections.getLength()); 
+						for(int ConnectCounter = 0; ConnectCounter < Connections.getLength(); ConnectCounter++){
 							//System.out.println("\nThis is ConnectCountertemp number "+ ConnectCountertemp);
 							Node connection = Connections.item(ConnectCounter);					//getting the a specific connection in the counters position
-							for(int ConnectCounterj = 0; ConnectCounterj < 1;ConnectCounterj++){
+							String connectionID = "connectionID"+ ConnectCounter;
+							String connectionType = "connectionType"+ ConnectCounter;
+							String connectingWithObject = "connectingWithObject"+ ConnectCounter;
 							if(connection.getNodeType() == Node.ELEMENT_NODE){
 								Element Conn = (Element) connection;							//changing the connection into the element so we can use it.
 								if(Conn.getAttribute("CxnDef.ID").contains("CxnDef")){								//this line of code i wrote so incase it doesn't have a connection the connection ID wouldn't show.
-									String connectionID =Conn.getAttribute("CxnDef.ID");
-									n.setProperty("connectionID", connectionID);
-									System.out.print("7");
-									String connectionType=Conn.getAttribute("CxnDef.Type");
-									n.setProperty("connectionType", connectionType);
-									System.out.print("8");
-									String connectingWithObject=Conn.getAttribute("ToObjDef.IdRef");
-									n.setProperty("connectingWithObject", connectingWithObject);
-									System.out.print("9");
+									String connectionID1 =Conn.getAttribute("CxnDef.ID");
+									n.setProperty(connectionID, connectionID1);
+									System.out.println("7");
+									System.out.println( n.getProperty(connectionID)+ " " );
+									String connectionType1=Conn.getAttribute("CxnDef.Type");
+									n.setProperty(connectionType, connectionType1);
+									System.out.println("8");
+									System.out.println( n.getProperty(connectionType)+ " " );
+									String connectingWithObject1=Conn.getAttribute("ToObjDef.IdRef");
+									n.setProperty(connectingWithObject, connectingWithObject1);
+									System.out.println("9");
+									System.out.println( n.getProperty(connectingWithObject)+ " " );
 									
 									Element probability = (Element) Conn.getElementsByTagName("AttrDef").item(0);
 									if( probability != null &&probability.getAttribute("AttrDef.Type").equals("AT_PROB")){
 										String probabilityOfConnection = probability.getElementsByTagName("AttrValue").item(0).getTextContent(); //added the probability in the connection
-										n.setProperty("probabilityOfConnection", probabilityOfConnection);
-										System.out.print("10");
+										String probabilityOfConnection1 = "probabilityOfConnection"+ ConnectCounter;
+										n.setProperty(probabilityOfConnection1, probabilityOfConnection);
+										System.out.println( n.getProperty(probabilityOfConnection1)+ " " );
+										System.out.println("Adding probability");
 									}
 								}
 							}
-						}
-							ConnectCounter++;
-							ConnectCountertemp++;
+							
 						}	
-					}
+					
 				}
 				
 				
 				//addinng properties end here
-				
 				nodes.add(n);
 				System.out.println("node added");
 			}
