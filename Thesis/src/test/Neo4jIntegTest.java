@@ -124,39 +124,46 @@ public class Neo4jIntegTest {
 						
 						//this part of the code if for getting the names of the objects as in their types.
 						NodeList NameList = eElement.getElementsByTagName("AttrDef");			//getting the AttrDef for the specific object its a LIST
-						for(int i = 0 ; i <NameList.getLength(); i++){
-							Node NameNode = NameList.item(i);									//getting the AttrDef at the specific position for the specific object
+						
+						for(int i1 = 0 ; i1 <NameList.getLength(); i1++){
+							Node NameNode = NameList.item(i1);									//getting the AttrDef at the specific position for the specific object
 							Element NameElements = (Element) NameNode;
 							Node parentNode = NameNode.getParentNode();							//gets the parent of the specific node to check that it is equal to the specific object so it wouldn't get another object
+						
 							if(NameElements.getAttribute("AttrDef.Type").equals("AT_NAME") && parentNode.equals(nNode)){		//gets the name of the object READ the NAME.txt  
 								if(eElement.getAttribute("SymbolNum").equals("ST_BPMN_ANNOTATION_1")){
 									NodeList AdditionalInfoTask = NameElements.getElementsByTagName("PlainText"); 		//getting the plain text elements list in the connection just incase there is a couple not only one
-//									System.out.println("There is ADDITIONAL INFORMATION "+ AdditionalInfoTask.getLength());
+							
 									for(int AddInfoCounter = 0; AddInfoCounter < AdditionalInfoTask.getLength();AddInfoCounter++){
+										String AdditionalInfo ="Information text "+ AddInfoCounter;
 										Node AddInfoNode = AdditionalInfoTask.item(AddInfoCounter);			//getting the specific plaintext element in a specific position
+									
 										if(AddInfoNode.getNodeType() == Node.ELEMENT_NODE){
 											Element AddInfo = (Element) AddInfoNode;							//casting the object into an element so we can use it and get its value
-											AddInfoArray[temp][AddInfoCounter+1]= AddInfo.getAttribute("TextValue");
+											String theAddInfo= AddInfo.getAttribute("TextValue");
+											n.setProperty(AdditionalInfo, theAddInfo);
 												
 											}
-								}
-								}else{
-								Element e = (Element) NameElements.getElementsByTagName("PlainText").item(0);
-								ObjectInfo[temp][2]= e.getAttribute("TextValue");							//System.out.println("Name is : " + ObjectInfo[temp][3]);
-
-								}
-							}
-							if(NameElements.getAttribute("AttrDef.Type").equals("AT_ID")){
-								
-								Element e = (Element) NameElements.getElementsByTagName("PlainText").item(0);			//this is to be added beside tasks of subprocess to distinguish them from normal tasks
-								ObjectInfo[temp][3]= e.getAttribute("TextValue");
-							}
-							
 						}
+							}
+								else
+							{
+								Element e = (Element) NameElements.getElementsByTagName("PlainText").item(0);
+								String infoText= e.getAttribute("TextValue");							
+								n.setProperty("Information text", infoText);
+							}
+						}
+			
+//							if(NameElements.getAttribute("AttrDef.Type").equals("AT_ID")){
+//								
+//								Element e = (Element) NameElements.getElementsByTagName("PlainText").item(0);			//this is to be added beside tasks of subprocess to distinguish them from normal tasks
+//								ObjectInfo[temp][3]= e.getAttribute("TextValue");
+//							}
+//							
+//						}
 						
 						//this part is for getting the connections and their information
-						
-						//NodeList n = eElement.getChildNodes(); 
+						 
 						int ConnectCounter = 0;
 						NodeList Connections = eElement.getElementsByTagName("CxnDef"); 		//getting the connections list for the specified element
 						//System.out.println(Connections.getLength()); 
