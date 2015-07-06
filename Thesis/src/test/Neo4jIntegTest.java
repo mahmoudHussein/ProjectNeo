@@ -101,19 +101,19 @@ public class Neo4jIntegTest {
 						
 						String objectID = eElement.getAttribute("ObjDef.ID");
 						n.setProperty("objectID", objectID);								//saving the objectID as a new property for the created node
-						System.out.println("1 ");
-						System.out.println( n.getProperty( "objectID" )+ " " );
+//						System.out.println("1 ");
+//						System.out.println( n.getProperty( "objectID" )+ " " );
 						
 						String objectType = eElement.getAttribute("SymbolNum") ;
 						n.setProperty("objectType", objectType);
-						System.out.println("2 ");
-						System.out.println( n.getProperty( "objectType" )+ " " );
+//						System.out.println("2 ");
+//						System.out.println( n.getProperty( "objectType" )+ " " );
 						
 						if(eElement.getAttribute("SymbolNum").equals("ST_BPMN_SUBPROCESS")){
 							String linkedModelID = eElement.getAttribute("LinkedModels.IdRefs"); 
 							n.setProperty("linkedModelID", linkedModelID);
-							System.out.println("3 ");
-							System.out.println( n.getProperty( "linkedModelID" )+ " " );
+//							System.out.println("3 ");
+//							System.out.println( n.getProperty( "linkedModelID" )+ " " );
 						}
 						
 						if(eElement.getAttribute("ToCxnDefs.IdRefs").contains("CxnDef")){								//this line of code i wrote so incase it doesn't have a connection the connection ID wouldn't show.
@@ -124,8 +124,8 @@ public class Neo4jIntegTest {
 									String connectionNum = "connected With "+allConCounter;
 									String connectionIDRef = allCon[allConCounter];
 									n.setProperty(connectionNum, connectionIDRef);
-									System.out.println("4 ");
-									System.out.println( n.getProperty(connectionNum)+ " " );
+//									System.out.println("4 ");
+//									System.out.println( n.getProperty(connectionNum)+ " " );
 								}
 							
 						}
@@ -150,8 +150,8 @@ public class Neo4jIntegTest {
 											Element AddInfo = (Element) AddInfoNode;							//casting the object into an element so we can use it and get its value
 											String theAddInfo= AddInfo.getAttribute("TextValue");
 											n.setProperty(AdditionalInfo, theAddInfo);
-											System.out.println("5 ");
-											System.out.println( n.getProperty(AdditionalInfo)+ " " );
+//											System.out.println("5 ");
+//											System.out.println( n.getProperty(AdditionalInfo)+ " " );
 												
 											}
 						}
@@ -161,8 +161,8 @@ public class Neo4jIntegTest {
 								Element e = (Element) NameElements.getElementsByTagName("PlainText").item(0);
 								String infoText= e.getAttribute("TextValue");							
 								n.setProperty("Information text", infoText);
-								System.out.println("6 ");
-								System.out.println( n.getProperty("Information text")+ " " );
+//								System.out.println("6 ");
+//								System.out.println( n.getProperty("Information text")+ " " );
 							}
 						}
 							
@@ -180,7 +180,7 @@ public class Neo4jIntegTest {
 						 
 						
 						NodeList Connections = eElement.getElementsByTagName("CxnDef"); 		//getting the connections list for the specified element
-						System.out.println("number of connections" + Connections.getLength()); 
+//						System.out.println("number of connections" + Connections.getLength()); 
 						for(int ConnectCounter = 0; ConnectCounter < Connections.getLength(); ConnectCounter++){
 							//System.out.println("\nThis is ConnectCountertemp number "+ ConnectCountertemp);
 							Node connection = Connections.item(ConnectCounter);					//getting the a specific connection in the counters position
@@ -192,24 +192,24 @@ public class Neo4jIntegTest {
 								if(Conn.getAttribute("CxnDef.ID").contains("CxnDef")){								//this line of code i wrote so incase it doesn't have a connection the connection ID wouldn't show.
 									String connectionID1 =Conn.getAttribute("CxnDef.ID");
 									n.setProperty(connectionID, connectionID1);
-									System.out.println("7");
-									System.out.println( n.getProperty(connectionID)+ " " );
+//									System.out.println("7");
+//									System.out.println( n.getProperty(connectionID)+ " " );
 									String connectionType1=Conn.getAttribute("CxnDef.Type");
 									n.setProperty(connectionType, connectionType1);
-									System.out.println("8");
-									System.out.println( n.getProperty(connectionType)+ " " );
+//									System.out.println("8");
+//									System.out.println( n.getProperty(connectionType)+ " " );
 									String connectingWithObject1=Conn.getAttribute("ToObjDef.IdRef");
 									n.setProperty(connectingWithObject, connectingWithObject1);
-									System.out.println("9");
-									System.out.println( n.getProperty(connectingWithObject)+ " " );
+//									System.out.println("9");
+//									System.out.println( n.getProperty(connectingWithObject)+ " " );
 									
 									Element probability = (Element) Conn.getElementsByTagName("AttrDef").item(0);
 									if( probability != null &&probability.getAttribute("AttrDef.Type").equals("AT_PROB")){
 										String probabilityOfConnection = probability.getElementsByTagName("AttrValue").item(0).getTextContent(); //added the probability in the connection
 										String probabilityOfConnection1 = "probabilityOfConnection"+ ConnectCounter;
 										n.setProperty(probabilityOfConnection1, probabilityOfConnection);
-										System.out.println( n.getProperty(probabilityOfConnection1)+ " " );
-										System.out.println("Adding probability");
+//										System.out.println( n.getProperty(probabilityOfConnection1)+ " " );
+//										System.out.println("Adding probability");
 									}
 								}
 							}
@@ -218,11 +218,12 @@ public class Neo4jIntegTest {
 					
 				}
 				
-				
-				//addinng properties end here
-				nodes.add(n);
-				System.out.println("node added");
+
 			}
+				System.out.println(n.getPropertyKeys());
+				//Adding properties end here
+//				nodes.add(n);
+				System.out.println("node added");
 			transaction.success();
 		}
 	}
