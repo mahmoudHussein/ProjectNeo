@@ -31,10 +31,10 @@ import org.neo4j.graphdb.factory.GraphDatabaseFactory;
 public class Neo4jIntegTest {
 	
 	private static final String DB_PATH = "C:\\Users\\mahmoud\\Desktop\\masters\\DHBW work\\neo4j-community-2.1.8";
-	ArrayList<org.neo4j.graphdb.Node> nodes;
-	GraphDatabaseService graphDb;
-	ArrayList<org.neo4j.graphdb.Relationship> relations;
-	Document XMLdoc;
+//	ArrayList<org.neo4j.graphdb.Node> nodes;
+	public GraphDatabaseService graphDb;
+//	ArrayList<org.neo4j.graphdb.Relationship> relations;
+	Document XMLdoc;	
 	
 	private static enum RelTypes implements RelationshipType
 	{
@@ -74,6 +74,7 @@ public class Neo4jIntegTest {
 		return nList.getLength();	
 	}
 	
+	
 	/**
 	 * creates the database we will be working on, and initialize the nodes in the array list by creating them
 	 * and adding their property.
@@ -102,18 +103,18 @@ public class Neo4jIntegTest {
 						String objectID = eElement.getAttribute("ObjDef.ID");
 						n.setProperty("objectID", objectID);								//saving the objectID as a new property for the created node
 //						System.out.println("1 ");
-//						System.out.println( n.getProperty( "objectID" )+ " " );
+						System.out.println( n.getProperty( "objectID" )+ " " );
 						
 						String objectType = eElement.getAttribute("SymbolNum") ;
 						n.setProperty("objectType", objectType);
 //						System.out.println("2 ");
-//						System.out.println( n.getProperty( "objectType" )+ " " );
+						System.out.print( n.getProperty( "objectType" )+ " " );
 						
 						if(eElement.getAttribute("SymbolNum").equals("ST_BPMN_SUBPROCESS")){
 							String linkedModelID = eElement.getAttribute("LinkedModels.IdRefs"); 
 							n.setProperty("linkedModelID", linkedModelID);
 //							System.out.println("3 ");
-//							System.out.println( n.getProperty( "linkedModelID" )+ " " );
+							System.out.print( n.getProperty( "linkedModelID" )+ " " );
 						}
 						
 						if(eElement.getAttribute("ToCxnDefs.IdRefs").contains("CxnDef")){								//this line of code i wrote so incase it doesn't have a connection the connection ID wouldn't show.
@@ -125,7 +126,7 @@ public class Neo4jIntegTest {
 									String connectionIDRef = allCon[allConCounter];
 									n.setProperty(connectionNum, connectionIDRef);
 //									System.out.println("4 ");
-//									System.out.println( n.getProperty(connectionNum)+ " " );
+									System.out.print( n.getProperty(connectionNum)+ " " );
 								}
 							
 						}
@@ -151,7 +152,7 @@ public class Neo4jIntegTest {
 											String theAddInfo= AddInfo.getAttribute("TextValue");
 											n.setProperty(AdditionalInfo, theAddInfo);
 //											System.out.println("5 ");
-//											System.out.println( n.getProperty(AdditionalInfo)+ " " );
+											System.out.print( n.getProperty(AdditionalInfo)+ " " );
 												
 											}
 						}
@@ -162,7 +163,7 @@ public class Neo4jIntegTest {
 								String infoText= e.getAttribute("TextValue");							
 								n.setProperty("Information text", infoText);
 //								System.out.println("6 ");
-//								System.out.println( n.getProperty("Information text")+ " " );
+								System.out.print( n.getProperty("Information text")+ " " );
 							}
 						}
 							
@@ -193,22 +194,22 @@ public class Neo4jIntegTest {
 									String connectionID1 =Conn.getAttribute("CxnDef.ID");
 									n.setProperty(connectionID, connectionID1);
 //									System.out.println("7");
-//									System.out.println( n.getProperty(connectionID)+ " " );
+									System.out.println( n.getProperty(connectionID)+ " " );
 									String connectionType1=Conn.getAttribute("CxnDef.Type");
 									n.setProperty(connectionType, connectionType1);
 //									System.out.println("8");
-//									System.out.println( n.getProperty(connectionType)+ " " );
+									System.out.println( n.getProperty(connectionType)+ " " );
 									String connectingWithObject1=Conn.getAttribute("ToObjDef.IdRef");
 									n.setProperty(connectingWithObject, connectingWithObject1);
 //									System.out.println("9");
-//									System.out.println( n.getProperty(connectingWithObject)+ " " );
+									System.out.println( n.getProperty(connectingWithObject)+ " " );
 									
 									Element probability = (Element) Conn.getElementsByTagName("AttrDef").item(0);
 									if( probability != null &&probability.getAttribute("AttrDef.Type").equals("AT_PROB")){
 										String probabilityOfConnection = probability.getElementsByTagName("AttrValue").item(0).getTextContent(); //added the probability in the connection
 										String probabilityOfConnection1 = "probabilityOfConnection"+ ConnectCounter;
 										n.setProperty(probabilityOfConnection1, probabilityOfConnection);
-//										System.out.println( n.getProperty(probabilityOfConnection1)+ " " );
+										System.out.println( n.getProperty(probabilityOfConnection1)+ " " );
 //										System.out.println("Adding probability");
 									}
 								}
@@ -220,8 +221,9 @@ public class Neo4jIntegTest {
 				
 
 			}
-				System.out.println(n.getPropertyKeys());
+//				System.out.println(n.getPropertyKeys());
 				//Adding properties end here
+//				System.out.println(n.getClass());
 //				nodes.add(n);
 				System.out.println("node added");
 			transaction.success();
@@ -245,8 +247,14 @@ public class Neo4jIntegTest {
 		graphDb.shutdown();
 		System.out.println("neo4j database is shuting down");
 	}
+	
+	int elementNumbers (GraphDatabaseService graphDb){
+		this.graphDb.getAllNodes();
+		return 0;
+	}
  
-  public static void main(String argv[]) {
+
+public static void main(String argv[]) {
 	  final JFileChooser chooser = new JFileChooser();
       if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
     	 Document d =  ReadFileAndSave(chooser.getSelectedFile());
