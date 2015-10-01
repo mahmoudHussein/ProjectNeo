@@ -36,6 +36,7 @@ public class test2 {
 			relationship = firstNode.createRelationshipTo( secondNode, RelTypes.KNOWS );
 			relationship.setProperty( "message", "brave Neo4j " );
 			
+			System.out.println(firstNode.toString());
 			System.out.print( firstNode.getProperty( "message" )+ " " );
 			System.out.print( relationship.getProperty( "message" )+ " " );
 			System.out.print( secondNode.getProperty( "message" ) +"\n ");
